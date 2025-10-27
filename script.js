@@ -15,6 +15,12 @@ const timerDisplay = document.getElementById('timer-display');
 const ring = document.querySelector('.ring-fg');
 const bgVideo = document.getElementById('bg-video');
 
+// Ensure background videos loop while the timer is running.  By setting
+// the loop attribute up front the <video> element will restart
+// automatically whenever a new source is loaded, keeping motion
+// continuous during long focus or break sessions.
+bgVideo.loop = true;
+
 const CIRCUM = 2 * Math.PI * 168;
 ring.style.strokeDasharray = CIRCUM;
 
@@ -68,7 +74,10 @@ function playMusic(path){
   try{
     if(bgMusic && bgMusic.src.includes(path)){ if(bgMusic.paused) bgMusic.play(); return; }
     if(bgMusic) bgMusic.pause();
-    bgMusic = new Audio(path); bgMusic.loop = true; bgMusic.volume = 0.35;
+    bgMusic = new Audio(path);
+    bgMusic.loop = true;
+    // Lower the background music volume for a less intrusive ambient sound.
+    bgMusic.volume = 0.2;
     bgMusic.play().catch(()=>{});
     clearInterval(keepAliveChecker);
     keepAliveChecker = setInterval(()=>{ if(bgMusic && bgMusic.paused && isRunning) bgMusic.play().catch(()=>{}); },5000);
@@ -94,14 +103,7 @@ function applyModeStyle(){
 
 // タイマー制御
 function startTimer(){
-  // Play the start sound only when beginning a focus session (initial
-  // launch or after a break). Avoid playing it when resuming from a
-  // pause or while in break modes. This behaviour aligns with the
-  // requirement to use start.mp3 when the focus timer starts and not
-  // during break periods.
-  if(!isRunning && !paused && phase === "focus"){
-    soundStart.play().catch(()=>{});
-  }
+  soundStart.play().catch(()=>{});
   if(isRunning && !paused) return;
 
   const focusTime = parseInt(focusValue.textContent)*60;
@@ -193,50 +195,3 @@ startBtn.addEventListener("click",startTimer);
 pauseBtn.addEventListener("click",pauseTimer);
 resetBtn.addEventListener("click",resetTimer);
 init();
-// -----------------------------------------------------------------------------
-// Zoom suppression
-//
-// Disallow pinch‑to‑zoom, ctrl+mousewheel zoom and keyboard shortcuts that
-// adjust the page zoom. Users should not be able to zoom in or out
-// regardless of which tab (timer or settings) is displayed. The meta
-// viewport tag in index.html prevents pinch zoom at the browser level,
-// however desktop browsers may still respond to keyboard or wheel events.
-// The handlers below call preventDefault() on those events when the user
-// attempts to zoom. See the accompanying meta tag for additional details.
-(() => {
-  // Prevent ctrl + wheel zoom
-  document.addEventListener(
-    'wheel',
-    (e) => {
-      if (e.ctrlKey) {
-        e.preventDefault();
-      }
-    },
-    { passive: false }
-  );
-  // Prevent multi‑touch zoom gestures (for some browsers/devices)
-  ['gesturestart', 'gesturechange', 'gestureend'].forEach((evt) => {
-    document.addEventListener(evt, (e) => {
-      e.preventDefault();
-    });
-  });
-  // Prevent double‑tap to zoom on touch devices
-  let lastTouchEnd = 0;
-  document.addEventListener(
-    'touchend',
-    (e) => {
-      const now = Date.now();
-      if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-      }
-      lastTouchEnd = now;
-    },
-    false
-  );
-  // Prevent keyboard zoom shortcuts
-  document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
-        e.preventDefault();
-      }
-    });
-})();
