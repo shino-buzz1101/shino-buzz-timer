@@ -1,139 +1,115 @@
-/* ===== カラーバリアブル ===== */
-:root{
-  --apple-red: #ff3b30;             /* アップル系の赤（集中） */
-  --sage-green: #7ba67b;            /* セージ系の緑（休憩） */
-  --offwhite: rgba(255,255,255,0.85); /* 乳白色 */
-  --ring-bg: rgba(255,255,255,0.25); /* 外周の薄い土台（白系） */
-
-  --timer-text: #fff;               /* タイマーの文字色＝白 */
-  --timer-border: #fff;             /* タイマー円の枠＝白（塗り無し） */
+:root {
+  --apple-red: #ff3b30;
+  --sage-green: #7ba67b;
+  --offwhite: rgba(255,255,255,0.85);
+  --ring-bg: rgba(255,255,255,0.25);
+  --timer-text: #fff;
+  --timer-border: #fff;
 }
 
-/* フェードロード（白背景） */
 body {
   margin: 0;
-  background: #fff;
   font-family: "Hiragino Sans", sans-serif;
+  background: #fff;
   color: #222;
   text-align: center;
-  overflow-x: hidden;
+  overflow: hidden;
   opacity: 0;
   animation: fadeIn 1.2s ease forwards;
 }
 @keyframes fadeIn { to { opacity: 1; } }
 
-/* 起動画面（白） */
 #splash-screen {
   position: fixed; inset: 0;
-  background: #fff; color: #111;
-  z-index: 9999;
+  background: #fff;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  animation: splashFade 2.2s ease 0.3s forwards;
+  justify-content: center; align-items: center;
+  z-index: 9999;
+  animation: splashFade 2s ease 0.4s forwards;
 }
 #splash-screen img { width: 120px; margin-bottom: 10px; }
-#splash-screen h1 { margin: 0; font-size: 1.4rem; font-weight: 700; }
-@keyframes splashFade { 0%{opacity:1} 75%{opacity:1} 100%{opacity:0; visibility:hidden} }
+#splash-screen h1 { font-size: 1.4rem; color: #111; }
+@keyframes splashFade { 0%,80%{opacity:1}100%{opacity:0;visibility:hidden;} }
 
-/* 背景動画 */
 #bg-video {
-  position: fixed; top: 50%; left: 50%;
+  position: fixed; top:50%; left:50%;
   transform: translate(-50%,-50%);
-  width: 100vw; height: 100vh;
-  object-fit: cover;
-  z-index: -1;
-  transition: opacity .8s ease;
+  width: 100vw; height: 100vh; object-fit: cover;
+  z-index: -1; transition: opacity .8s ease;
 }
 .fadeout { opacity: 0; }
 
-/* モードアイコン（横並び・正円） */
-header { display: flex; justify-content: center; margin-top: 12px; }
-#mode-icons { display: flex; gap: 40px; }
+header { display:flex; justify-content:center; margin-top:10px; }
+#mode-icons { display:flex; gap:40px; }
 .mode-icon {
-  position: relative; width: 90px; height: 90px; border-radius: 50%;
-  /* 白の半透明でアイコンとテキストを見やすく */
+  position:relative; width:90px; height:90px; border-radius:50%;
   background: rgba(255,255,255,0.65);
-  border: 3px solid transparent;
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .25s, border-color .25s, background-color .25s;
+  border:3px solid transparent;
+  display:flex; align-items:center; justify-content:center;
+  transition:.25s;
 }
-.mode-icon.active { transform: scale(1.1); }
-.icon-img { width: 60px; height: 60px; }
-.mode-text {
-  position: absolute; bottom: 6px; width: 100%; text-align: center;
-  font-size: .8em; font-weight: 700; color: #333;
-}
+.mode-icon.active { transform:scale(1.1); }
+.icon-img { width:60px; height:60px; }
+.mode-text { position:absolute; bottom:6px; width:100%; font-size:.8em; font-weight:700; color:#333; }
 
-/* タイマー —— 大きく＆ヘッダーに近づける（上端≒1/3ライン） */
-#app-content { padding-bottom: 180px; }
-#timer-wrapper {
-  position: relative;
-  margin-top: calc(33vh - min(41vw, 180px));
-  display: flex; justify-content: center; align-items: center;
-}
-#timer-circle {
-  position: relative;
-  width: min(82vw, 360px);
-  height: min(82vw, 360px);
-}
-
-/* 中央の時間表示（塗りつぶし無し / 枠のみ） */
+#timer-wrapper { margin-top: calc(27vh - 100px); display: flex; justify-content: center; align-items: center; }
+#timer-circle { position:relative; width:min(82vw,360px); height:min(82vw,360px); }
 #timer-display {
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  font-size: 3.6rem; font-weight: 800; letter-spacing: .03em;
-  color: var(--timer-text);               /* 白文字 */
-  border: 6px solid var(--timer-border);  /* 白の枠線 */
-  border-radius: 50%;
-  background: transparent;                /* 塗りつぶし無し */
+  position:absolute; inset:0; display:grid; place-items:center;
+  font-size:3.6rem; font-weight:800; color:var(--timer-text);
+  border:6px solid var(--timer-border); border-radius:50%; background:transparent;
 }
+#progress-ring { position:absolute; inset:0; transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:var(--ring-bg); stroke-width:16; }
+.ring-fg { fill:none; stroke:var(--apple-red); stroke-width:16; stroke-linecap:round;
+  stroke-dasharray:1055; transition:stroke-dashoffset .9s linear, stroke .25s ease; }
 
-/* SVG進捗リング（外周） */
-#progress-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
-.ring-bg { fill: none; stroke: var(--ring-bg); stroke-width: 16; }
-.ring-fg {
-  fill: none; stroke: var(--apple-red);   /* 初期＝集中色（赤） */
-  stroke-width: 16; stroke-linecap: round;
-  stroke-dasharray: 1055; stroke-dashoffset: 0;
-  transition: stroke-dashoffset .9s linear, stroke .25s ease;
-}
+#remaining { color:var(--offwhite); margin-top:18px; font-size:1rem; }
+#message { color:var(--offwhite); margin-top:6px; font-size:1.1rem; font-weight:700; }
 
-/* 残り回数（乳白色）＋メッセージ（乳白色・太字・気持ち大きく） */
-#remaining { margin-top: 18px; font-size: 1rem; color: var(--offwhite); }
-#message  { margin: 8px 0 0; font-size: 1.05rem; font-weight: 700; color: var(--offwhite); }
-
-/* 下部固定パネル（背景の白帯をなくす） */
-footer {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: transparent;   /* ← 透明に */
-  box-shadow: none;          /* ← 影も消す */
-  padding: 14px 0 18px;
-  z-index: 10;
-}
-
-/* そのままボタンは白の正円で視認性キープ */
-#controls { 
-  display: flex; justify-content: center; gap: 38px; margin-bottom: 8px; 
-}
+#controls { display:flex; justify-content:center; gap:38px; margin-top:12px; }
 .ctrl-btn {
-  width: 78px; height: 78px; border-radius: 50%;
-  background: #fff; border: 2px solid #222;
-  display: grid; place-items: center;
-  transition: transform .15s ease;
+  width:78px; height:78px; border-radius:50%;
+  background:#fff; border:2px solid #222; display:grid; place-items:center;
+  transition:.15s;
 }
-.ctrl-btn:hover { transform: scale(1.05); }
-.ctrl-btn img { width: 38px; height: 38px; }
+.ctrl-btn:hover { transform:scale(1.05); }
+.ctrl-btn img { width:38px; height:38px; }
 
-#settings {
-  display: flex; justify-content: center; gap: 14px;
-  font-size: .95rem; color: #333;
-}
-#settings label { white-space: nowrap; }
-#settings input { width: 56px; text-align: center; }
+/* ▼ ページ切替 */
+.page { display:none; }
+.page.active { display:block; animation: fadePage .4s ease; }
+@keyframes fadePage { from{opacity:0} to{opacity:1} }
 
-/* ちょい広画面 */
-@media (min-width: 460px) {
-  #timer-circle { width: 360px; height: 360px; }
-  #timer-display { font-size: 3.9rem; }
+/* ▼ 設定画面 */
+.setting-group { margin:30px auto; }
+.setting-title { font-size:1rem; color:#fff; font-weight:700; }
+.circle-setting {
+  display:flex; align-items:center; justify-content:center; gap:18px;
+  margin-top:6px;
 }
+.circle-value {
+  width:100px; height:100px; border-radius:50%;
+  border:3px solid #fff; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.8rem; font-weight:700;
+}
+.circle-setting button {
+  font-size:2rem; color:#fff;
+  background:transparent; border:none; cursor:pointer;
+  width:40px; height:40px;
+}
+
+/* ▼ 下部タブナビ（スマホアプリ風） */
+#tab-nav {
+  position:fixed; bottom:0; left:0; right:0;
+  height:64px; background:rgba(255,255,255,0.15);
+  display:flex; justify-content:space-around; align-items:center;
+  backdrop-filter: blur(8px);
+}
+.tab-btn {
+  flex:1; height:100%; font-size:1rem; border:none; background:transparent;
+  color:#fff; font-weight:600; cursor:pointer;
+  transition:background .25s;
+}
+.tab-btn.active { background:rgba(255,255,255,0.2); border-top:2px solid var(--apple-red); }
