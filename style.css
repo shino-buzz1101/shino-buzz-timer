@@ -52,7 +52,18 @@ header { display:flex; justify-content:center; margin-top:10px; }
 .icon-img { width:60px; height:60px; }
 .mode-text { position:absolute; bottom:6px; width:100%; font-size:.8em; font-weight:700; color:#333; }
 
-#timer-wrapper { margin-top: calc(27vh - 100px); display: flex; justify-content: center; align-items: center; }
+/*
+  Move the timer, its surrounding ring and progress indicator slightly
+  upward on the page. Previously the element used a margin-top of
+  27vh minus a fixed offset. Reducing the viewport based offset
+  decreases the space above the timer so it sits higher on the screen.
+*/
+#timer-wrapper {
+  margin-top: calc(20vh - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 #timer-circle { position:relative; width:min(82vw,360px); height:min(82vw,360px); }
 #timer-display {
   position:absolute; inset:0; display:grid; place-items:center;
