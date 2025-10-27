@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>忍者ポモドーロ</title>
+<link rel="manifest" href="./manifest.json" />
+<link rel="stylesheet" href="./style.css" />
+<meta name="theme-color" content="#ffffff" />
+</head>
+
+<body>
+  <!-- 起動画面（白背景） -->
+  <div id="splash-screen">
+    <img src="icons/icon-192.png" alt="忍者ロゴ" />
+    <h1>忍者ポモドーロ</h1>
+  </div>
+
+  <!-- 背景動画（縦動画対応） -->
+  <video id="bg-video" autoplay muted playsinline></video>
+
+  <!-- 上部モード表示（横並び・正円） -->
+  <header>
+    <div id="mode-icons">
+      <div id="focus-icon" class="mode-icon active">
+        <img src="icons/勉強.png" alt="集中" class="icon-img" />
+        <span class="mode-text">集中</span>
+      </div>
+      <div id="break-icon" class="mode-icon">
+        <img src="icons/休憩.png" alt="休憩" class="icon-img" />
+        <span class="mode-text">休憩</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- メイン：タイマー（塗りつぶし無しの円＋進捗リング） -->
+  <main id="app-content">
+    <div id="timer-wrapper">
+      <div id="timer-circle">
+        <!-- SVG進捗リング（外周） -->
+        <svg id="progress-ring" width="360" height="360" viewBox="0 0 360 360" aria-hidden="true">
+          <circle class="ring-bg" cx="180" cy="180" r="168"></circle>
+          <circle class="ring-fg" cx="180" cy="180" r="168"></circle>
+        </svg>
+        <!-- 中央の時間表示（円は枠のみ） -->
+        <div id="timer-display">25:00</div>
+      </div>
+    </div>
+
+    <div id="remaining">次の長い休憩まで：<span id="sessions-left">4</span> 回</div>
+    <p id="message">修行を始めよう💨</p>
+  </main>
+
+  <!-- 画面下部固定：操作ボタン＋時間設定 -->
+  <footer>
+    <div id="controls">
+      <button id="start-btn" class="ctrl-btn"><img src="icons/ctrl1.png" alt="start" /></button>
+      <button id="pause-btn" class="ctrl-btn"><img src="icons/ctrl2.png" alt="pause" /></button>
+      <button id="reset-btn" class="ctrl-btn"><img src="icons/ctrl3.png" alt="reset" /></button>
+    </div>
+    <div id="settings">
+      <label>集中(分): <input id="focus-time" type="number" value="25" min="1" max="90" /></label>
+      <label>短休(分): <input id="short-break" type="number" value="5" min="1" max="30" /></label>
+      <label>長休(分): <input id="long-break" type="number" value="15" min="1" max="60" /></label>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
